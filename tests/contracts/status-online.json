@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "device_id": "esp32-demo-01",
+  "boot_id": "fixture-0001",
+  "status": "online",
+  "reason": "connected",
+  "firmware_version": "1.0.0"
+}
+

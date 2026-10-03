@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "device_id": "esp32-demo-01",
+  "boot_id": "sim-0000002a",
+  "sequence": 0,
+  "sampled_at": "2026-10-03T12:00:00Z",
+  "uptime_seconds": 0,
+  "temperature_c": 22.53,
+  "humidity_percent": 51.35,
+  "pressure_hpa": 1015.04,
+  "wifi_rssi_dbm": -57
+}

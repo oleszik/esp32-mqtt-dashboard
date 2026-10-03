@@ -1,0 +1,21 @@
+# Standard demo device is confined to its own namespace.
+user device
+topic write iot/v1/devices/esp32-demo-01/telemetry
+topic write iot/v1/devices/esp32-demo-01/status
+topic read iot/v1/devices/esp32-demo-01/config
+topic write iot/v1/devices/esp32-demo-01/config/ack
+
+# Backend consumes telemetry and device state. It does not publish commands.
+user backend
+topic read $SYS/broker/version
+topic read iot/v1/devices/+/telemetry
+topic read iot/v1/devices/+/status
+topic read iot/v1/devices/+/config/ack
+
+# Local integration-test account; never intended for production deployment.
+user tester
+topic readwrite iot/v1/devices/+/telemetry
+topic readwrite iot/v1/devices/+/status
+topic readwrite iot/v1/devices/+/config
+topic readwrite iot/v1/devices/+/config/ack
+
