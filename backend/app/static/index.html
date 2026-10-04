@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESP32 MQTT Monitor</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">LIVE IOT TELEMETRY</p>
+      <h1>ESP32 MQTT Monitor</h1>
+      <p class="subtitle">Device health and environmental telemetry in real time</p>
+    </div>
+    <div class="system-health">
+      <span id="stream-dot" class="dot warn"></span>
+      <div><strong id="stream-label">Connecting</strong><small>Live event stream</small></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="overview">
+      <div class="section-heading">
+        <div><p class="eyebrow">FLEET</p><h2>Connected devices</h2></div>
+        <button id="refresh">Refresh</button>
+      </div>
+      <div id="device-list" class="device-list"><p class="empty">Waiting for telemetry…</p></div>
+    </section>
+
+    <section id="details" class="details hidden">
+      <div class="device-title">
+        <div><p class="eyebrow">SELECTED DEVICE</p><h2 id="device-name">—</h2></div>
+        <span id="device-status" class="badge">UNKNOWN</span>
+      </div>
+      <div class="metrics">
+        <article><span>Temperature</span><strong id="temperature">—</strong><small>°C</small></article>
+        <article><span>Humidity</span><strong id="humidity">—</strong><small>% RH</small></article>
+        <article><span>Pressure</span><strong id="pressure">—</strong><small>hPa</small></article>
+        <article><span>Wi-Fi signal</span><strong id="rssi">—</strong><small>dBm</small></article>
+      </div>
+      <div class="content-grid">
+        <article class="panel chart-panel">
+          <div class="panel-title"><h3>Telemetry history</h3><span>Last 60 samples</span></div>
+          <canvas id="chart" width="900" height="330" aria-label="Telemetry history chart"></canvas>
+          <div class="legend"><span class="temp">Temperature</span><span class="humid">Humidity</span></div>
+        </article>
+        <article class="panel facts">
+          <h3>Device details</h3>
+          <dl>
+            <div><dt>Last update</dt><dd id="last-seen">—</dd></div>
+            <div><dt>Uptime</dt><dd id="uptime">—</dd></div>
+            <div><dt>Boot ID</dt><dd id="boot-id">—</dd></div>
+            <div><dt>Sequence</dt><dd id="sequence">—</dd></div>
+            <div><dt>Messages</dt><dd id="message-count">0</dd></div>
+            <div><dt>Duplicates</dt><dd id="duplicate-count">0</dd></div>
+            <div><dt>Rejected</dt><dd id="rejected-count">0</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel events-panel">
+      <div class="panel-title"><h3>Recent events</h3><span>Status, configuration, and validation activity</span></div>
+      <div id="events" class="events"><p class="empty">No events recorded.</p></div>
+    </section>
+  </main>
+  <footer>MQTT QoS 1 · Retained presence · SQLite persistence · SSE updates</footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+name: esp32-mqtt-dashboard
+
+services:
+  broker:
+    build:
+      context: ./broker
+    environment:
+      MQTT_DEVICE_USERNAME: ${MQTT_DEVICE_USERNAME:-device}
+      MQTT_DEVICE_PASSWORD: ${MQTT_DEVICE_PASSWORD:-change-device-password}
+      MQTT_BACKEND_USERNAME: ${MQTT_BACKEND_USERNAME:-backend}
+      MQTT_BACKEND_PASSWORD: ${MQTT_BACKEND_PASSWORD:-change-backend-password}
+      MQTT_TEST_USERNAME: ${MQTT_TEST_USERNAME:-tester}
+      MQTT_TEST_PASSWORD: ${MQTT_TEST_PASSWORD:-change-test-password}
+    ports:
+      - "127.0.0.1:1883:1883"
+    volumes:
+      - mosquitto-data:/mosquitto/data
+    networks: [iot-internal]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h 127.0.0.1 -p 1883 -u \"$$MQTT_BACKEND_USERNAME\" -P \"$$MQTT_BACKEND_PASSWORD\" -t '$$SYS/broker/version' -C 1 -W 3 >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      MQTT_HOST: broker
+      MQTT_PORT: 1883
+      MQTT_USERNAME: ${MQTT_BACKEND_USERNAME:-backend}
+      MQTT_PASSWORD: ${MQTT_BACKEND_PASSWORD:-change-backend-password}
+      DATABASE_PATH: /data/telemetry.db
+      STALE_AFTER_SECONDS: ${STALE_AFTER_SECONDS:-15}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - backend-data:/data
+    networks: [iot-internal]
+    depends_on:
+      broker:
+        condition: service_healthy
+    restart: unless-stopped
+
+  simulator:
+    build:
+      context: ./simulator
+    profiles: [demo]
+    environment:
+      MQTT_HOST: broker
+      MQTT_PORT: 1883
+      MQTT_USERNAME: ${MQTT_DEVICE_USERNAME:-device}
+      MQTT_PASSWORD: ${MQTT_DEVICE_PASSWORD:-change-device-password}
+      DEVICE_ID: ${SIMULATOR_DEVICE_ID:-esp32-demo-01}
+      INTERVAL_SECONDS: ${SIMULATOR_INTERVAL_SECONDS:-2}
+      SIMULATOR_SEED: ${SIMULATOR_SEED:-42}
+    networks: [iot-internal]
+    depends_on:
+      broker:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  iot-internal:
+    driver: bridge
+
+volumes:
+  mosquitto-data:
+  backend-data:
+

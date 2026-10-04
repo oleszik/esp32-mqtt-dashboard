@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/.pio
+*.db
+*.sqlite*
+.env
+firmware/include/secrets.h
+broker/config/passwords
+docs/dashboard-preview.png
+
