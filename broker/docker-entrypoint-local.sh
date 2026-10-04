@@ -9,6 +9,7 @@ set -eu
 : "${MQTT_TEST_PASSWORD:?MQTT_TEST_PASSWORD is required}"
 
 password_file=/mosquitto/runtime/passwords
+chown -R mosquitto:mosquitto /mosquitto/runtime /mosquitto/data
 rm -f "$password_file"
 mosquitto_passwd -b -c "$password_file" "$MQTT_DEVICE_USERNAME" "$MQTT_DEVICE_PASSWORD"
 mosquitto_passwd -b "$password_file" "$MQTT_BACKEND_USERNAME" "$MQTT_BACKEND_PASSWORD"
